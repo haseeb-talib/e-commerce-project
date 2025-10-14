@@ -1,33 +1,77 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
+dotenv.config()
 const userSchema = new mongoose.Schema({
-    userAvatar: {
-        type: String,
-        default: "https://via.placeholder.com/200x200.png"
+   profileImage:{
+    type:String
+   },
+   userName:{
+    type:String,
+    required:true,
+    trim:true
+   },
+   userEmail:{
+    type:String,
+    required:true,
+    unique:true
+   },
+   userAddress:{
+    type:String,
+    trim:true
+   },
+   userIsVerified:{
+    type:Boolean,
+    default:false
+   },
+   userPasswordResetToken:{
+    type:String,
+    default:null
+   },
+   userPassword:{
+    type:String,
+    required:true,
+    minlength:6
+   },
+     userPasswordExpirationDate:{
+        type:Date,
+        default:null
     },
-    name: {
-        type: String,
-        required: [true, "Please provide a name"],
-        trim: true
-    },
-    username: {
-        type: String,
-        required: [true, "Please provide a username"],
-        unique: [true, "Username already exists"],
-        lowercase: true,
-        trim: true,
-        index: true,
-    },
-})
+      userVerificationToken:{
+        type:String,
+        default:null
+      },
+      refreshToken:{
+        type:String,
+        default:null
+      },
+      userRole:{
+          type: String,
+        enum:["buyer","store-admin","factory-admin","admin"],
+        default:"buyer"
+      },
+      phoneNumber:{
+        type:String
+      },
+      isActive:{
+        type:Boolean,
+        default:true
+      }
+      },
+{timestamps:true}
+)
 
 userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password, 10);
+    if (!this.isModified("userPassword")) return next();
+    this.password = await bcrypt.hash(this.userPassword, 10);
     next();
 });
 
 userSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, this.userPassword);
 };
 
 
@@ -35,8 +79,8 @@ userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
             _id: this._id,
-            email: this.email,
-            username: this.username,
+            userEmail: this.userEmail,
+            userName: this.userName,
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
