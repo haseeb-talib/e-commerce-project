@@ -1,19 +1,18 @@
+
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
-import crypto from "crypto";
-import jwt from "jsonwebtoken";
+
 const userSchema = new mongoose.Schema(
     {
         profileImage: {
             type: String,
             default: 'https://placehold.co/600x400?text=User+Image',
         },
-        userName: {
+        adminName: {
             type: String,
             required: true,
             trim: true,
         },
-        userEmail: {
+        adminEmail: {
             type: String,
             required: true,
             unique: true,
@@ -21,43 +20,39 @@ const userSchema = new mongoose.Schema(
             lowercase: true,
             index: true,
         },
-        userPassword: {
+        adminPassword: {
             type: String,
             required: true,
         },
-        userAddress: {
+        adminAddress: {
             type: String,
             default: null,
             trim: true,
         },
-        userIsVerified: {
+        adminIsVerified: {
             type: Boolean,
             default: false,
         },
-        userPasswordResetToken: {
+        adminPasswordResetToken: {
             type: String,
             default: null,
         },
-        userPasswordExpirationDate: {
+        adminPasswordExpirationDate: {
             type: Date,
             default: null,
         },
-        userVerificationToken: {
+        adminVerificationToken: {
             type: String,
             default: null,
         },
-        userVerificationTokenExpiry: {
-            type: Date,
-            default: null
-        },
-        userRefreshToken: {
+        refreshToken: {
             type: String,
             default: null,
         },
-        userRole: {
+        adminRole: {
             type: String,
-            enum: ["buyer", "store-admin", "factory-admin"],
-            default: "buyer",
+            enum: ["super-admin", "admin-analyst", "admin-factory", "admin-store", "admin-buyer"],
+            default: "super-admin",
         },
         phoneNumber: {
             type: String,
