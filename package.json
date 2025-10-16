@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "e-commerce-project",
   "version": "1.0.0",
   "description": "Professional Node.js Backend Boilerplate by Hammad Abbas",
