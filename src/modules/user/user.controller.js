@@ -22,4 +22,5 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 })
 
-export { getAllUsers }
+
+export { getAllUsers}
