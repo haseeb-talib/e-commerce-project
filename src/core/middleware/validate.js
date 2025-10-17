@@ -18,15 +18,26 @@ const validate = (schema) =>
             next();
         } catch (error) {
             // 🧾 Handle Zod validation errors cleanly
-            if (error instanceof ZodError) {
-                const formattedErrors = (error.errors || []).map((err) => ({
-                    field: err.path.join("."),
-                    message: err.message,
-                }));
+            // if (error instanceof ZodError) {
+            //     const formattedErrors = (error.errors || []).map((err) => ({
+            //         field: err.path.join("."),
+            //         message: err.message,
+            //     }));
 
-                // ❌ Throw ApiError to keep consistent format
+            //     // ❌ Throw ApiError to keep consistent format
+            //     throw new ApiError(400, "Validation failed", formattedErrors);
+            // }
+                if (error instanceof ZodError) {
+                const formattedErrors = Array.isArray(error.errors)
+                    ? error.errors.map((err) => ({
+                        field: err.path.join("."),
+                        message: err.message,
+                    }))
+                    : [{ field: "unknown", message: error.message }];
+
                 throw new ApiError(400, "Validation failed", formattedErrors);
             }
+
 
             // 🔥 Unexpected error (schema not Zod, etc.)
             console.error("Unexpected validation error:", error);

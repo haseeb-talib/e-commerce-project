@@ -7,7 +7,8 @@ import crypto from "crypto";
 dotenv.config()
 const userSchema = new mongoose.Schema({
    profileImage:{
-    type:String
+    type:String,
+    default: 'https://placehold.co/600x400?text=User+Image'
    },
    userName:{
     type:String,
@@ -17,10 +18,14 @@ const userSchema = new mongoose.Schema({
    userEmail:{
     type:String,
     required:true,
-    unique:true
+    unique:true,
+    trim:true,
+    lowercase:true,
+    index:true
    },
    userAddress:{
     type:String,
+      default: null,
     trim:true
    },
    userIsVerified:{
@@ -44,7 +49,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:null
       },
-      refreshToken:{
+     userRefreshToken:{
         type:String,
         default:null
       },
