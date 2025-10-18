@@ -42,8 +42,8 @@ const storeSchema = new mongoose.Schema(
     },
     idCardNumber: {
       type: String,
-      minlength: 13,
-      maxlength: 13,
+      min: 1,
+      max: 13,
       trim: true,
       default: null,
     },
