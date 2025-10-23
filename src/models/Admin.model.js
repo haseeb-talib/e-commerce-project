@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { jwt } from "zod/mini";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import crypto from "crypto";
 dotenv.config();
