@@ -1,38 +1,33 @@
+import { ApiError } from "../utils/api-error.js";
 
-import {ApiError} from "../utils/api-error.js";
-/**
- * authorizeRoles(...)
- * Checks if the logged-in user or admin has any of the allowed roles.
- * Usage:
- *   authorizeRoles("store-admin")
- *   authorizeRoles("factory-admin", "super-admin")
- *   authorizeRoles("user", "admin")
- */
+const authorizeRoles = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      throw new ApiError(401, "Unauthorized: please log in first");
+    }
 
-const authorizeRoles=(...allowedRoles)=>{
-    return (req,res,next)=>{
-        if(!req.user){
-            throw new ApiError(401,"Unauthorized: please log in first");
-        }
-        // Extract both possible role fields
+    const userRole = req.user.userRole;
+    const adminRole = req.user.adminRole;
+    const currentRole = userRole || adminRole;
 
-        const userRole=req.user.userRole;
-        const adminRole=req.user.adminRole;
+    if (!currentRole) {
+      throw new ApiError(403, "Access denied - No role assigned");
+    }
 
-        // Pick whichever role exists (userRole OR adminRole)
+    // ✅ Auto allow any admin role if no specific roles are defined
+    if (allowedRoles.length === 0 && currentRole.includes("admin")) {
+      return next();
+    }
 
-        const currentRole=userRole||adminRole;
-        if(!currentRole){
-            throw new ApiError(403,"Access denied - No role assigned");
-        }
+    if (!allowedRoles.includes(currentRole)) {
+      throw new ApiError(
+        403,
+        `Access denied - Only [${allowedRoles.join(", ")}] can access this route`
+      );
+    }
 
-      // Check if the current role is allowed
-      if(!allowedRoles.includes(currentRole)){
-          throw new ApiError(403,`Access denied - Only [${allowedRoles.join(", ")}] can access this route`);
-      }
-       // Role is valid → continue
-        next();
+    next();
+  };
+};
 
-}
-}
-export {authorizeRoles};
+export { authorizeRoles };

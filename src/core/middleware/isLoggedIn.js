@@ -1,16 +1,19 @@
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
-const isLoggedIn = asyncHandler(async (req, res, next) => {
-    const accessToken = req.cookies.accessToken;
-    if (!accessToken) {
-        throw new ApiError(401, "Unauthorized");
-    }
-    const decodedAccessToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-    req.user = decodedAccessToken;
+export const isLoggedIn = asyncHandler(async (req, res, next) => {
+  const accessToken = req.cookies?.accessToken || req.headers["authorization"]?.split(" ")[1];
+
+  if (!accessToken) {
+    throw new ApiError(401, "Unauthorized - No access token provided");
+  }
+
+  try {
+    const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    req.user = decodedToken;
     next();
-})
-
-export { isLoggedIn }
-
+  } catch (err) {
+    throw new ApiError(401, "Invalid or expired token");
+  }
+});

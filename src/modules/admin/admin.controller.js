@@ -29,10 +29,10 @@ const registerAdmin = asyncHandler(async (req, res) => {
     admin.adminVerificationTokenExpiry = tokenExpiry;
     await admin.save();
 
-    // Send verification email
+    // Send verification email (send unhashed token in link)
     const verificationLink = `${process.env.BASE_URL}/api/v1/admin/verify/${unHashedToken}`;
     await mailTransporter.sendMail({
-        from: process.env.MAILTRAP_SENDEREMAIL,
+        from: process.env.MAILTRAP_SENDER_EMAIL,
         to: adminEmail,
         subject: "Verify your admin email",
         html: adminVerificationMailBody(adminName, verificationLink)
@@ -61,7 +61,14 @@ const loginAdmin = asyncHandler(async (req, res) => {
     await admin.save();
 
     return res.status(200).json(
-        new ApiResponse(200, { admin: { adminName: admin.adminName, adminEmail: admin.adminEmail, adminRole: admin.adminRole }, tokens: { accessToken, refreshToken } }, "Admin logged in successfully")
+        new ApiResponse(200, {
+            admin: {
+                adminName: admin.adminName,
+                adminEmail: admin.adminEmail,
+                adminRole: admin.adminRole
+            },
+            tokens: { accessToken, refreshToken }
+        }, "Admin logged in successfully")
     );
 });
 
@@ -130,7 +137,7 @@ const forgotAdminPasswordMail = asyncHandler(async (req, res) => {
 
     const resetLink = `${process.env.BASE_URL}/api/v1/admin/reset-password/${unHashedToken}`;
     await mailTransporter.sendMail({
-        from: process.env.MAILTRAP_SENDEREMAIL,
+        from: process.env.MAILTRAP_SENDER_EMAIL,
         to: adminEmail,
         subject: "Reset your password",
         html: adminForgotPasswordMailBody(admin.adminName, resetLink)

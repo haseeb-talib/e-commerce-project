@@ -1,5 +1,5 @@
 import { asyncHandler } from "../../core/utils/async-handler.js";
-import User from "../../models/user.model.js";
+import User from "../../models/User.model.js";
 import { ApiError } from "../../core/utils/api-error.js";
 import { ApiResponse } from "../../core/utils/api-response.js";
 import { userForgotPasswordMailBody, userVerificationMailBody } from "../../shared/constants/mail.constant.js";
@@ -7,6 +7,7 @@ import { mailTransporter } from "../../shared/helpers/mail.helper.js";
 import { storeAccessToken, storeLoginCookies } from "../../shared/helpers/cookies.helper.js";
 
 const registerUser = asyncHandler(async (req, res) => {
+    console.log("Register User Called");
     const { userName, userEmail, userPassword, userRole, phoneNumber } = req.body
     const existingUser = await User.findOne({ userEmail })
     if (existingUser) {
@@ -32,20 +33,21 @@ const registerUser = asyncHandler(async (req, res) => {
     await user.save()
 
     const userVerificationEmailLink = `${process.env.BASE_URL}/api/v1/auth/verify/${hashedToken}`
-
+    
     await mailTransporter.sendMail({
-        from: process.env.MAILTRAP_SENDEREMAIL,
+        from: process.env.MAILTRAP_SENDER_EMAIL,
         to: userEmail,
         subject: "Verify your email",
         html: userVerificationMailBody(userName, userVerificationEmailLink),
     })
-
+console.log("Verification email sent");
     const response = {
         userName: user.userName,
         userEmail: user.userEmail,
         userRole: user.userRole,
         phoneNumber: user.phoneNumber
     }
+    console.log("Sending response to client");
 
     return res
         .status(201)
@@ -215,7 +217,7 @@ const forgotPasswordMail = asyncHandler(async (req, res) => {
 
 
     await mailTransporter.sendMail({
-        from: process.env.MAILTRAP_SENDEREMAIL,
+        from: process.env.MAILTRAP_SENDER_EMAIL,
         to: userEmail,
         subject: "Forgot password",
         html: userForgotPasswordMailBody(user.userName, userPasswordResetLink)
