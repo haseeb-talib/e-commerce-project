@@ -1,27 +1,17 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - .:/app
-      - /app/node_modules
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
     restart: unless-stopped
+    ports:
+      - "27018:27017"   # 👈 host:container port changed to avoid conflict
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongo_data:/data/db
 
-  # MongoDB (optional - uncomment if needed)
-  # mongodb:
-  #   image: mongo:latest
-  #   ports:
-  #     - "27017:27017"
-  #   environment:
-  #     - MONGO_INITDB_ROOT_USERNAME=admin
-  #     - MONGO_INITDB_ROOT_PASSWORD=password
-  #   volumes:
-  #     - mongodb_data:/data/db
-
-# volumes:
-#   mongodb_data:
+volumes:
+  mongo_data:

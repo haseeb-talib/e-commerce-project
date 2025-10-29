@@ -1,12 +1,12 @@
 import Store from "../../models/Store.model.js";
 import User from "../../models/User.model.js";
-import { StoreFeedBack } from "../../models/Store.feedback.model.js";
-import { StoreOrders } from "../../models/Store.order.model.js";
-import StoreProduct from "../../models/Store.product.model.js";
-import { StoreTransaction } from "../../models/Store.transaction.model.js";
-import { StoreProductFeedback } from "../../models/Store.product.feedback.model.js";
-import { StoreProductReview } from "../../models/store.product.review.model.js";
-import { StoreProductCategory } from "../../models/store.product.catagory.model.js";
+import  StoreFeedback from "../../models/store.feedback.model.js";
+import  StoreOrders  from "../../models/store.orders.models.js";
+import StoreProduct from "../../models/store.product.models.js";
+import  StoreTransaction  from "../../models/store.feedback.model.js";
+import  StoreProductFeedback  from "../../models/store.feedback.model.js";
+import  StoreProductReview  from "../../models/store.product.review.model.js";
+import  StoreProductCategory  from "../../models/store.product.catagory.model.js";
 
 import { ApiError } from "../../core/utils/api-error.js";
 import { ApiResponse } from "../../core/utils/api-response.js";

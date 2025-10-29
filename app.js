@@ -4,6 +4,7 @@ import cors from "cors"
 import { errorHandler } from "./src/core/middleware/errorHandler.js";
 import authRouter from "./src/modules/auth/auth.route.js";
 import userRouter from "./src/modules/user/user.route.js";
+import storeRouter from "./src/modules/store/store.route.js"
 
 
 const app = express()
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/users", userRouter)
+app.use("/api/v1/store", storeRouter)
 
 app.get('/health', (req, res) => {
     res.status(200).json({

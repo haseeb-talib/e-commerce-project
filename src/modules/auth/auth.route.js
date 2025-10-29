@@ -8,7 +8,7 @@ const authRouter = Router()
 
 authRouter.post("/register-user", validate(registerSchema), registerUser)
 authRouter.post("/login-user", validate(loginSchema), logInUser)
-authRouter.post("/logout-user", isLoggedIn, logoutUser)
+authRouter.post("/logout-user", logoutUser)
 authRouter.get("/verify/:token", verifyUserMail)
 authRouter.get("/get-access-token", getAccessToken)
 authRouter.get("/forgot-password-mail", forgotPasswordMail)
